@@ -1,0 +1,60 @@
+<div class="chat-wrapper">
+
+  <!-- USERNAME SCREEN -->
+  <div *ngIf="!usernameSubmitted" class="join-screen">
+    <h2>Join Chat</h2>
+    <input
+      [(ngModel)]="username"
+      placeholder="Enter your username"
+      (keydown.enter)="joinChat()"
+    />
+    <button (click)="joinChat()">Join</button>
+  </div>
+
+  <!-- CHAT SCREEN -->
+  <div *ngIf="usernameSubmitted" class="chat-screen">
+
+    <div class="chat-header">
+      <span>Logged in as <strong>{{ username }}</strong></span>
+      <span class="status" [class.online]="connected()">
+        {{ connected() ? 'Connected' : 'Connecting...' }}
+      </span>
+      <button (click)="leaveChat()">Leave</button>
+    </div>
+
+    <!-- MESSAGE LIST -->
+    <div class="message-list">
+      <div
+        *ngFor="let msg of messages()"
+        class="message"
+        [ngClass]="{
+          'my-message'     : msg.type === 'CHAT' && msg.sender === username,
+          'other-message'  : msg.type === 'CHAT' && msg.sender !== username,
+          'system-message' : msg.type === 'JOIN' || msg.type === 'LEAVE'
+        }"
+      >
+        <ng-container *ngIf="msg.type === 'CHAT'">
+          <span class="sender">{{ msg.sender }}</span>
+          <span class="content">{{ msg.content }}</span>
+          <span class="timestamp">{{ msg.timestamp }}</span>
+        </ng-container>
+
+        <ng-container *ngIf="msg.type === 'JOIN' || msg.type === 'LEAVE'">
+          <span class="system-text">{{ msg.content }}</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="message-input">
+      <input
+        [(ngModel)]="messageInput"
+        placeholder="Type a message..."
+        (keydown)="onKeyDown($event)"
+        [disabled]="!connected()"
+      />
+      <button (click)="sendMessage()" [disabled]="!connected()">Send</button>
+    </div>
+
+  </div>
+</div>
