@@ -15,7 +15,7 @@ export class ChatService {
 
   connect(username: string): void {
     this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS('https://aman-chat-backend.azurewebsites.net/ws'),
       reconnectDelay: 5000,
 
       onConnect: () => {
